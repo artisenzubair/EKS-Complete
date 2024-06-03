@@ -108,65 +108,41 @@ metadata:
 
 ### Create Role 
 
-
 ```yaml
+# role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: app-role
   namespace: webapps
+  name: jenkins-deployer
 rules:
-  - apiGroups:
-        - ""
-        - apps
-        - autoscaling
-        - batch
-        - extensions
-        - policy
-        - rbac.authorization.k8s.io
-    resources:
-      - pods
-      - secrets
-      - componentstatuses
-      - configmaps
-      - daemonsets
-      - deployments
-      - events
-      - endpoints
-      - horizontalpodautoscalers
-      - ingress
-      - jobs
-      - limitranges
-      - namespaces
-      - nodes
-      - pods
-      - persistentvolumes
-      - persistentvolumeclaims
-      - resourcequotas
-      - replicasets
-      - replicationcontrollers
-      - serviceaccounts
-      - services
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ```
 
 ### Bind the role to service account
 
 
 ```yaml
+# rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: app-rolebinding
-  namespace: webapps 
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: app-role 
+  name: jenkins-deployer-binding
+  namespace: webapps
 subjects:
-- namespace: webapps 
-  kind: ServiceAccount
-  name: jenkins 
+- kind: ServiceAccount
+  name: jenkins
+  namespace: webapps
+roleRef:
+  kind: Role
+  name: jenkins-deployer
+  apiGroup: rbac.authorization.k8s.io
+
 ```
 
 ### Generate token using service account in the namespace
