@@ -120,7 +120,7 @@ rules:
   resources: ["deployments"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 - apiGroups: [""]
-  resources: ["services"]
+  resources: ["services", "pods", "nodes"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ```
 
